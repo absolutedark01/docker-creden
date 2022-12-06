@@ -33,6 +33,8 @@ RUN cd /tmp && \
     make -j2 && \
     make install
 
+RUN alias python=python3
+
 #mongo c driver for luarock lua-mongo
 RUN cd /tmp && \
     git clone https://github.com/mongodb/mongo-c-driver.git && \
@@ -49,10 +51,10 @@ RUN apt-get clean
 
 #RUN ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log && \
 #    ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log 
- 
- 
-#RUN apt-get install libbson-dev
-RUN luarocks install https://raw.githubusercontent.com/isage/lua-cbson/master/rockspec/lua-cbson-git-1.rockspec
+
+RUN git config --global url."https://".insteadOf git://
+
+RUN apt-get install -y libbson-dev
 
 RUN luarocks install luasocket && \
     luarocks install redis-lua && \
@@ -75,7 +77,8 @@ RUN luarocks install luasocket && \
     luarocks install luautf8 && \
     luarocks install utf8 && \
     luarocks install lua-resty-validation && \
-    luarocks install lua-mongo
+    luarocks install lua-mongo \ 
+    luarocks install lua-resty-http
 
 COPY ./conf/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
 #CMD ["/usr/local/openresty/bin/openresty","-g","daemon off;"]
